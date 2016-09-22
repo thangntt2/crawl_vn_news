@@ -12,20 +12,20 @@ class VneSpider(CrawlSpider):
     r = re.compile('\d+/\d+/\d+')
     allowed_domains = ["vnexpress.net"]
     start_urls = [
-        # 'http://www.vnexpress.net/tin-tuc/thoi-su',
-        # 'http://vnexpress.net/tin-tuc/the-gioi',
-        # 'http://kinhdoanh.vnexpress.net/',
-        # 'http://giaitri.vnexpress.net/',
-        # 'http://thethao.vnexpress.net/',
-        # 'http://vnexpress.net/tin-tuc/phap-luat',
-        # 'http://vnexpress.net/tin-tuc/giao-duc',
-        # 'http://suckhoe.vnexpress.net/',
-        # 'http://giadinh.vnexpress.net/',
-        # 'http://dulich.vnexpress.net/',
-        # 'http://vnexpress.net/tin-tuc/khoa-hoc',
+        'http://www.vnexpress.net/tin-tuc/thoi-su',
+        'http://vnexpress.net/tin-tuc/the-gioi',
+        'http://kinhdoanh.vnexpress.net/',
+        'http://giaitri.vnexpress.net/',
+        'http://thethao.vnexpress.net/',
+        'http://vnexpress.net/tin-tuc/phap-luat',
+        'http://vnexpress.net/tin-tuc/giao-duc',
+        'http://suckhoe.vnexpress.net/',
+        'http://giadinh.vnexpress.net/',
+        'http://dulich.vnexpress.net/',
+        'http://vnexpress.net/tin-tuc/khoa-hoc',
         'http://sohoa.vnexpress.net/',
-        # 'http://vnexpress.net/tin-tuc/oto-xe-may/',
-        # 'http://vnexpress.net/tin-tuc/cong-dong',
+        'http://vnexpress.net/tin-tuc/oto-xe-may/',
+        'http://vnexpress.net/tin-tuc/cong-dong',
     ]
 
     rules = (
