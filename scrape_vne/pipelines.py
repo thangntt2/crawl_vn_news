@@ -5,36 +5,37 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from elasticsearch import Elasticsearch
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
-MAX_TTL = 30 #days
+MAX_TTL = 30#days
+
 
 class ScrapeVnePipeline(object):
-	es_body = {
+    es_body = {
         "settings": {
             "index": {
-            "analysis": {
-                "analyzer": {
-                  "suggests_analyzer": {
-                    "tokenizer": "lowercase",
-                    "filter": [
-                      "lowercase",
-                      "shingle_filter"
-                    ],
-                    "type": "custom"
-                  }
+                "analysis": {
+                    "analyzer": {
+                        "suggests_analyzer": {
+                            "tokenizer": "lowercase",
+                            "filter": [
+                                "lowercase",
+                                "shingle_filter"
+                            ],
+                            "type": "custom"
+                        }
+                    },
+                    "filter": {
+                        "shingle_filter": {
+                            "min_shingle_size": 2,
+                            "max_shingle_size": 3,
+                            "type": "shingle"
+                        }
+                    }
                 },
-                "filter": {
-                  "shingle_filter": {
-                    "min_shingle_size": 2,
-                    "max_shingle_size": 3,
-                    "type": "shingle"
-                  }
-                }
-              },
-            "number_of_shards": "5",
-            "number_of_replicas": "1",
+                "number_of_shards": "5",
+                "number_of_replicas": "1",
             }
         },
         "mappings": {
@@ -69,16 +70,16 @@ class ScrapeVnePipeline(object):
         }
     }
 
-	def __init__(self):
-		self.es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+    def __init__(self):
+        self.es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
         print 'ScrapyeVnePipeline Initialize elasticsearch connection'
 
-	def process_item(self, item, spider):
-		item_date = datetime.strptime(item['date'], '%d/%m/%Y')
-		if (datetime.now().date()- item_date.date()).days < MAX_TTL:
-			status = self.es.indices.create(index='news_index-' + item['date'].replace("/","_"), body=self.es_body, ignore=400)
-			if status['status'] != 400: #mean ok
-				self.es.indices.delete(index='news_index-' + (item_date-timedelta(MAX_TTL)).date().strftime('%d_%m_%Y'))
-			self.es.index(index='news_index-' + item['date'].replace("/","_"), doc_type='news',
-				id=item['url'], body=json.dumps(dict(item)), ignore=400)
-		return item
+    def process_item(self, item, spider):
+        item_date = datetime.strptime(item['date'], '%d/%m/%Y')
+        if (datetime.now().date() - item_date.date()).days < MAX_TTL:
+            status = self.es.indices.create(index='news_index-' + item['date'].replace("/", "_"), body=self.es_body, ignore=400)
+            if status['status'] != 400:#mean ok
+                self.es.indices.delete(index='news_index-' + (item_date - timedelta(MAX_TTL)).date().strftime('%d_%m_%Y'), ignore=404)
+            self.es.index(index='news_index-' + item_date.date().strftime('%d_%m_%Y'), doc_type='news',
+            id=item['url'], body=json.dumps(dict(item)), ignore=400)
+        return item
