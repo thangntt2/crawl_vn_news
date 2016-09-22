@@ -1,0 +1,8 @@
+build/lib
+eggs
+items
+logs
+project.egg-info
+scrape_vne.egg-info
+dbs
+setup.py
