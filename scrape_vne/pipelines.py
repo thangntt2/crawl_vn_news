@@ -7,9 +7,10 @@
 from elasticsearch import Elasticsearch
 from datetime import datetime, timedelta
 import json
+import os
 
-MAX_TTL = 30#days
-
+MAX_TTL = os.getenv('MAX_TTL', 30)
+ES_PORT = os.getenv('ES_PORT', 9200)
 
 class ScrapeVnePipeline(object):
     es_body = {
@@ -71,7 +72,7 @@ class ScrapeVnePipeline(object):
     }
 
     def __init__(self):
-        self.es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+        self.es = Elasticsearch([{'host': 'localhost', 'port': ES_PORT}])
         print 'ScrapyeVnePipeline Initialize elasticsearch connection'
 
     def process_item(self, item, spider):
