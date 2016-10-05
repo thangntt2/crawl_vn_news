@@ -43,12 +43,14 @@ class VneSpider(CrawlSpider):
             item['description'] = response.xpath(
                 '//h3/text()').extract()[0].encode('utf-8').strip()
             if len(item['description']) == 0:
-                item['description'] = response.xpath(
-                '//h2/text()').extract()[0].encode('utf-8').strip()
+                texts = response.xpath('//h2/text()').extract()
+                for text in texts:
+                    item['description'] = item['description'] + text.encode('utf-8').strip()
 
             if len(item['description']) == 0:
-                item['description'] = response.xpath(
-                    '//div[@class="short_intro txt_666"]/text()').extract()[0].encode('utf-8').strip()
+                texts = response.xpath('//div[@class="short_intro txt_666"]/text()').extract()
+                for text in texts:
+                    item['description'] = item['description'] + text.encode('utf-8').strip()
 
             item['url'] = response.url.encode('utf-8')
             if len(response.xpath(
