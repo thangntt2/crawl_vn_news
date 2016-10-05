@@ -10,7 +10,7 @@ import json
 import os
 
 MAX_TTL = os.getenv('MAX_TTL', 30)
-ES_PORT = os.getenv('ES_PORT', 9200)
+ES_PORT = os.getenv('ES_PORT', 8889)
 
 class ScrapeVnePipeline(object):
     es_body = {

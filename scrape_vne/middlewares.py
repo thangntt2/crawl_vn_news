@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch
 from datetime import datetime, timedelta
 import os
 
-ES_PORT = os.getenv('ES_PORT', 9200)
+ES_PORT = os.getenv('ES_PORT', 8889)
 MAX_TTL = os.getenv('MAX_TTL', 30)
 
 class DupFilterMiddleware(object):
