@@ -72,7 +72,7 @@ class ScrapeVnePipeline(object):
     }
 
     def __init__(self):
-        self.es = Elasticsearch([{'host': 'localhost', 'port': ES_PORT}])
+        self.es = Elasticsearch([{'host': 'http://scrapyd', 'port': ES_PORT}])
         print 'ScrapyeVnePipeline Initialize elasticsearch connection'
 
     def process_item(self, item, spider):
