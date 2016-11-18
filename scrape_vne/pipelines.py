@@ -10,7 +10,8 @@ import json
 import os
 
 MAX_TTL = os.getenv('MAX_TTL', 30)
-ES_PORT = os.getenv('ES_PORT', 8889)
+ES_PORT = os.getenv('ELASTICSEARCH_PORT', 8889)
+ES_URL = os.getenv('ELASTICSEARCH_URL', 'localhost')
 
 class ScrapeVnePipeline(object):
     es_body = {
@@ -72,7 +73,7 @@ class ScrapeVnePipeline(object):
     }
 
     def __init__(self):
-        self.es = Elasticsearch([{'host': 'http://scrapyd', 'port': ES_PORT}])
+        self.es = Elasticsearch([{'host': ES_URL, 'port': ES_PORT}])
         print 'ScrapyeVnePipeline Initialize elasticsearch connection'
 
     def process_item(self, item, spider):
