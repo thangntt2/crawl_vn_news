@@ -10,8 +10,8 @@ import json
 import os
 
 MAX_TTL = os.getenv('MAX_TTL', 30)
-ES_PORT = os.getenv('ELASTICSEARCH_PORT', 443)
-ES_URL = os.getenv('ELASTICSEARCH_URL', 'https://wji4cg72wu:1lr4slrzuz@acme-development-8779249584.us-east-1.bonsai.io/')
+ES_PORT = os.getenv('ELASTICSEARCH_PORT', 8889)
+ES_URL = os.getenv('ELASTICSEARCH_URL', 'localhost')
 
 class ScrapeVnePipeline(object):
     es_body = {
