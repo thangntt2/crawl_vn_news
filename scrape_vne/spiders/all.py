@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 from scrape_vne.items import ScrapeVneItem
 
-GET_LIST_NEWS_SQL = 'SELECT * FROM `news`'
+GET_LIST_NEWS_SQL = 'SELECT * FROM `News`'
 
 
 def getFirstLine(paragraph):
