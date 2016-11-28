@@ -2,14 +2,15 @@
 from scrapy.spiders import Spider
 import scrapy
 from scrapy.linkextractors import LinkExtractor
-from newspaper import Article
+from readability import Document
 import newspaper
+from bs4 import BeautifulSoup
 import pymysql.cursors
 import os
 from datetime import datetime
-from scrape_vne.items import ScrapeVneItem
+from smartVnnCrawler.items import SmartvnncrawlerItem
 
-GET_LIST_NEWS_SQL = 'SELECT * FROM `News`'
+GET_LIST_NEWS_SQL = 'SELECT * FROM `news`'
 
 
 def getFirstLine(paragraph):
@@ -57,22 +58,18 @@ class AllSpider(Spider):
             yield request
 
     def parse_article(self, response):
-        item = ScrapeVneItem()
+        item = SmartvnncrawlerItem()
         item['url'] = response.url
 
-        article = Article(response.url)
-        article.download()
-        article.parse()
-        images = article.top_image
+        doc = Document(response.text)
+        bs = BeautifulSoup(doc.summary())
+        images = bs.img['src']
         if len(images) > 0:
             item['image'] = images
-        try:
-            item['date'] = article.publish_date.date().strftime('%d/%m/%Y')
-        except AttributeError:
-            item['date'] = datetime.now().date().strftime('%d/%m/%Y')
-        item['title'] = article.title
-        item['url'] = article.url
-        item['description'] = getFirstLine(article.text)
+
+        item['date'] = datetime.now().date().strftime('%d/%m/%Y')
+        item['title'] = doc.title
+        item['description'] = getFirstLine(bs.get_text())
         item['source'] = response.meta['source']
 
         yield item
