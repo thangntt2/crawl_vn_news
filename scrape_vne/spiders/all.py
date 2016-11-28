@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import pymysql.cursors
 import os
 from datetime import datetime
-from smartVnnCrawler.items import SmartvnncrawlerItem
+from scrape_vne.items import ScrapeVneItem
 
 GET_LIST_NEWS_SQL = 'SELECT * FROM `news`'
 
@@ -58,7 +58,7 @@ class AllSpider(Spider):
             yield request
 
     def parse_article(self, response):
-        item = SmartvnncrawlerItem()
+        item = ScrapeVneItem()
         item['url'] = response.url
 
         doc = Document(response.text)
