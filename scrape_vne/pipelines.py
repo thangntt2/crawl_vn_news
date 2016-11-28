@@ -13,6 +13,7 @@ MAX_TTL = os.getenv('MAX_TTL', 30)
 ES_PORT = os.getenv('ELASTICSEARCH_PORT', 9200)
 ES_URL = os.getenv('ELASTICSEARCH_URL', 'localhost')
 
+
 class ScrapeVnePipeline(object):
     es_body = {
         "settings": {
