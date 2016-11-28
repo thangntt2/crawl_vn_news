@@ -2,9 +2,8 @@
 from scrapy.spiders import Spider
 import scrapy
 from scrapy.linkextractors import LinkExtractor
-from readability import Document
+from newspaper import Article
 import newspaper
-from bs4 import BeautifulSoup
 import pymysql.cursors
 import os
 from datetime import datetime
@@ -39,6 +38,7 @@ class AllSpider(Spider):
             cursor = connection.cursor()
             cursor.execute(GET_LIST_NEWS_SQL)
             results = cursor.fetchall()
+            print results
             for news in results:
                 self.allowed_domains.append(news['baseurl'])
                 newspp = newspaper.build(news['baseurl'])
@@ -49,6 +49,7 @@ class AllSpider(Spider):
                         request.meta['source'] = news['name']
                         yield request
         finally:
+            print 'connection closed'
             connection.close()
 
     def parse_link(self, response):
@@ -61,15 +62,19 @@ class AllSpider(Spider):
         item = ScrapeVneItem()
         item['url'] = response.url
 
-        doc = Document(response.text)
-        bs = BeautifulSoup(doc.summary())
-        images = bs.img['src']
+        article = Article(response.url)
+        article.download()
+        article.parse()
+        images = article.top_image
         if len(images) > 0:
             item['image'] = images
-
-        item['date'] = datetime.now().date().strftime('%d/%m/%Y')
-        item['title'] = doc.title
-        item['description'] = getFirstLine(bs.get_text())
+        try:
+            item['date'] = article.publish_date.date().strftime('%d/%m/%Y')
+        except AttributeError:
+            item['date'] = datetime.now().date().strftime('%d/%m/%Y')
+        item['title'] = article.title
+        item['url'] = article.url
+        item['description'] = getFirstLine(article.text)
         item['source'] = response.meta['source']
 
         yield item

@@ -65,7 +65,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'scrape_vne.pipelines.ScrapeVnePipeline': 500,
+   'scrape_vne.pipelines.ScrapeVnePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

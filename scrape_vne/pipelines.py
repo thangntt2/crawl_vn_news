@@ -10,8 +10,8 @@ import json
 import os
 
 MAX_TTL = os.getenv('MAX_TTL', 30)
-ES_PORT = os.getenv('ELASTICSEARCH_PORT', 9200)
-ES_URL = os.getenv('ELASTICSEARCH_URL', 'localhost')
+ES_PORT = os.getenv('ES_PORT', 9200)
+ES_HOST = os.getenv('ES_HOST', 'localhost')
 
 
 class ScrapeVnePipeline(object):
@@ -74,15 +74,14 @@ class ScrapeVnePipeline(object):
     }
 
     def __init__(self):
-        self.es = Elasticsearch([{'host': ES_URL, 'port': ES_PORT}])
+        self.es = Elasticsearch([{'host': ES_HOST, 'port': ES_PORT}])
         print 'ScrapyeVnePipeline Initialize elasticsearch connection'
 
     def process_item(self, item, spider):
         item_date = datetime.strptime(item['date'], '%d/%m/%Y')
         if (datetime.now().date() - item_date.date()).days < MAX_TTL:
             status = self.es.indices.create(index='news_index-' + item['date'].replace("/", "_"), body=self.es_body, ignore=400)
-            if 'acknowledged' in status and status['acknowledged']:#mean ok
+            if 'acknowledged' in status and status['acknowledged']:
                 self.es.indices.delete(index='news_index-' + (item_date - timedelta(MAX_TTL)).date().strftime('%-d_%-m_%-Y'), ignore=404)
-            self.es.index(index='news_index-' + item['date'].replace("/", "_"), doc_type='news',
-            id=item['url'], body=json.dumps(dict(item)), ignore=400)
+            self.es.index(index='news_index-' + item['date'].replace("/", "_"), doc_type='news', id=item['url'], body=json.dumps(dict(item)), ignore=400)
         return item

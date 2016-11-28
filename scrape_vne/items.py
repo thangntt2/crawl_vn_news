@@ -6,8 +6,7 @@
 # http://doc.scrapy.org/en/latest/topics/items.html
 
 import scrapy
-import json
-from datetime import datetime
+
 
 class ScrapeVneItem(scrapy.Item):
     # define the fields for your item here like:
