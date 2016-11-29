@@ -8,8 +8,9 @@ import pymysql.cursors
 import os
 from datetime import datetime
 from scrape_vne.items import ScrapeVneItem
+from scrapy.exceptions import CloseSpider
 
-GET_LIST_NEWS_SQL = 'SELECT * FROM `News`'
+GET_LIST_NEWS_SQL = 'SELECT * FROM `News` WHERE name = %s'
 
 
 def getFirstLine(paragraph):
@@ -24,6 +25,10 @@ class AllSpider(Spider):
     allowed_domains = []
     start_urls = []
 
+    def __init__(self, newsprovider='', *args, **kwargs):
+        super(AllSpider, self).__init__(*args, **kwargs)
+        self.newsprovider = newsprovider
+
     def start_requests(self):
         connection = pymysql.connect(
             host=os.getenv('MYSQL_HOST'),
@@ -36,26 +41,29 @@ class AllSpider(Spider):
 
         try:
             cursor = connection.cursor()
-            cursor.execute(GET_LIST_NEWS_SQL)
-            results = cursor.fetchall()
-            print results
-            for news in results:
-                self.allowed_domains.append(news['baseurl'])
-                newspp = newspaper.build(news['baseurl'])
-                for cate in newspp.category_urls():
-                    if cate not in self.start_urls:
-                        self.start_urls.append(cate)
-                        request = scrapy.FormRequest(cate, callback=self.parse_link)
-                        request.meta['source'] = news['name']
-                        yield request
+            print self.newsprovider
+            n = cursor.execute(GET_LIST_NEWS_SQL, self.newsprovider)
+            if n == 0:
+                raise CloseSpider('news provider not available!')
+            news = cursor.fetchone()
+
+            self.allowed_domains.append(news['baseurl'])
+            newspp = newspaper.build(news['baseurl'])
+            for cate in newspp.category_urls():
+                if cate not in self.start_urls:
+                    self.start_urls.append(cate)
+                    request = scrapy.Request(
+                        cate,
+                        callback=self.parse_link
+                    )
+                    yield request
         finally:
             print 'connection closed'
             connection.close()
 
     def parse_link(self, response):
-        for link in LinkExtractor(allow=response.meta['source'],).extract_links(response):
-            request = scrapy.FormRequest(link.url, callback=self.parse_article)
-            request.meta['source'] = response.meta['source']
+        for link in LinkExtractor().extract_links(response):
+            request = scrapy.Request(link.url, callback=self.parse_article)
             yield request
 
     def parse_article(self, response):
@@ -75,6 +83,6 @@ class AllSpider(Spider):
         item['title'] = article.title
         item['url'] = article.url
         item['description'] = getFirstLine(article.text)
-        item['source'] = response.meta['source']
+        item['source'] = self.newsprovider
 
         yield item
