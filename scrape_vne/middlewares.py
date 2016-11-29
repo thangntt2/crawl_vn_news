@@ -33,7 +33,7 @@ class DupFilterMiddleware(object):
         self.connection.close()
 
     def process_request(self, request, spider):
-        if self.cursors.execute(self.check_sql, (request.url)) > 0:
+        if self.cursors.execute(self.check_sql, (request.url)) > 0 and 'is_category' not in request.meta:
             print "Request url existed, ignore it!!!"
             raise IgnoreRequest()
         else:
