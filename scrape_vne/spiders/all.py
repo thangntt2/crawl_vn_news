@@ -56,6 +56,7 @@ class AllSpider(Spider):
                         cate,
                         callback=self.parse_link
                     )
+                    request.meta['is_category'] = True
                     yield request
         finally:
             print 'connection closed'
