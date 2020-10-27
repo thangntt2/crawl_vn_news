@@ -2,7 +2,7 @@ attrs==16.2.0
 beautifulsoup4==4.5.1
 cffi==1.9.1
 constantly==15.1.0
-cryptography==1.5.3
+cryptography==3.2
 cssselect==1.0.0
 DateTime==4.1.1
 elasticsearch==5.0.1
@@ -30,7 +30,7 @@ attrs==16.2.0
 beautifulsoup4==4.5.1
 cffi==1.9.1
 constantly==15.1.0
-cryptography==1.5.3
+cryptography==3.2
 cssselect==1.0.0
 DateTime==4.1.1
 elasticsearch==5.0.1
