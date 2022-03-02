@@ -19,7 +19,7 @@ PyDispatcher==2.0.5
 pyOpenSSL==16.2.0
 pytz==2016.7
 queuelib==1.4.2
-Scrapy==1.2.1
+Scrapy==1.8.2
 service-identity==16.0.0
 six==1.10.0
 Twisted==16.5.0
@@ -47,7 +47,7 @@ PyDispatcher==2.0.5
 pyOpenSSL==16.2.0
 pytz==2016.7
 queuelib==1.4.2
-Scrapy==1.2.1
+Scrapy==1.8.2
 scrapyd==1.1.1
 scrapyd-client==1.0.1
 service-identity==16.0.0
